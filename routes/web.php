@@ -11,6 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'UserController@show');
+
+//Route::get('/user/{name}', 'UserController@get');
+Route::post('/adduser','UserController@addUser');

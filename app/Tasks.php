@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tasks extends Model
 {
     //
-    protected $fillable = ['description','list_id'];
+//    protected $fillable = ['description','list_id'];
 
     public function lists()
     {
