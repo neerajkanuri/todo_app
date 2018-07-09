@@ -7,79 +7,42 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function add(Request $request)
     {
-        //
+        $tasks = new Tasks;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+        $description = $request->input('task');
+
+        return response()->json($tasks->add($username, $listname, $description));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function delete(Request $request)
     {
-        //
+        $tasks = new Tasks;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+        $description = $request->input('task');
+
+        return response()->json($tasks->remove($username, $listname, $description));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function list($username, $listname)
     {
-        //
+        $tasks = new Tasks;
+
+        return response()->json($tasks->list($username, $listname));
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Tasks  $tasks
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Tasks $tasks)
+    public function change(Request $request)
     {
-        //
-    }
+        $tasks = new Tasks;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+        $description = $request->input('task');
+        $newdescription = $request->input('newtask');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Tasks  $tasks
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Tasks $tasks)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tasks  $tasks
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Tasks $tasks)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Tasks  $tasks
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Tasks $tasks)
-    {
-        //
+        return response()->json($tasks->change($username, $listname, $description,$newdescription));
     }
 }

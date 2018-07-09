@@ -19,12 +19,32 @@ class UsersTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public static $testData = [
+        'testAddUser' => [
+            'response' => [
+                'status' => 'User exists',
+                // Guzzle library
+            ]
+        ],
+    ];
+
     public function testAddUser()
     {
         $users = new Users();
+
         $result = response()->json($users->addUser('neeraj','abcd'));
-        $this->assertSame(json_encode([
-            'status' => 'User exists'
-        ]), $result->getContent());
+
+        $expectedResponse = $this->getExpectedResponse();
+
+        $this->assertSame(json_encode($expectedResponse, $result->getContent());
+    }
+
+    public function getExpectedResponse()
+    {
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+
+        $functionName = $trace[1]['function'];
+
+        return self::$testData[$functionName]['response'];
     }
 }

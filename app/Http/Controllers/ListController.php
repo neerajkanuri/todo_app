@@ -7,80 +7,38 @@ use Illuminate\Http\Request;
 
 class ListController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function add(Request $request)
     {
-        //
+        $lists = new Lists;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+
+        return response()->json($lists->add($username, $listname));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function delete(Request $request)
     {
-        //
+        $lists = new Lists;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+
+        return response()->json($lists->remove($username, $listname));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($username)
     {
-        //
-
+        $lists = new Lists;
+        return response()->json($lists->show($username));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Lists  $lists
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Lists $lists)
+    public function change(Request $request)
     {
-        //
-    }
+        $lists = new Lists;
+        $username = $request->input('username');
+        $listname = $request->input('listname');
+        $newlistname = $request->input('newlistname');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Lists  $lists
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lists $lists)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lists  $lists
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Lists $lists)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Lists  $lists
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Lists $lists)
-    {
-        //
+        return response()->json($lists->change($username, $listname, $newlistname));
     }
 }
+

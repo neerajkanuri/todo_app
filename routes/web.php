@@ -13,5 +13,26 @@
 
 Route::get('/', 'UserController@show');
 
-//Route::get('/user/{name}', 'UserController@get');
-Route::post('/adduser','UserController@addUser');
+/*
+ * Users table
+ */
+Route::get('/listusers','UserController@list');
+Route::post('/adduser','UserController@add');
+Route::put('/updateusername','UserController@change');
+Route::delete('/deleteuser','UserController@delete');
+
+/*
+ * Lists table
+ */
+Route::get('showlists/{username}','ListController@show');
+Route::post('/addlist','ListController@add');
+Route::put('/updatelistname','ListController@change');
+Route::delete('/deletelist','ListController@delete');
+
+/*
+ * Tasks table
+ */
+Route::get('/showtasks/{username}/{listname}','TaskController@list');
+Route::post('/addtask','TaskController@add');
+Route::put('/updatetask','TaskController@change');
+Route::delete('/deletetask','TaskController@delete');
