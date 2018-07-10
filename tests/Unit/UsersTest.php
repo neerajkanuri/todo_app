@@ -7,11 +7,6 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use Illuminate\Foundation\Testing\HttpException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-
-
 class UsersTest extends TestCase
 {
     /**
@@ -24,32 +19,14 @@ class UsersTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public static $testData = [
-        'testAddUser' => [
-            'response' => [
-                'status' => 'User exists',
-                // Guzzle library
-            ]
-        ],
-    ];
+    public static $testData = [];
 
     public function testAddUser()
     {
         $users = new Users();
-
-        $result = response()->json($users->addUser('neeraj','abcd'));
-
-        $expectedResponse = $this->getExpectedResponse();
-
-        $this->assertSame(json_encode($expectedResponse, $result->getContent());
-    }
-
-    public function getExpectedResponse()
-    {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-
-        $functionName = $trace[1]['function'];
-
-        return self::$testData[$functionName]['response'];
+        $result = response()->json($users->add('neeraj','abcd')[0]);
+        $this->assertSame(json_encode([
+            'Error' => 'User with username: '.'abcd'.' exists'
+        ]), $result->getContent());
     }
 }

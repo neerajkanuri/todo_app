@@ -10,12 +10,35 @@ class UserController extends Controller
 {
     public function add(Request $request)
     {
+        try {
+            $request->validate([
+                'name' => 'required|max:255',
+                'username' => 'required|max:255',
+            ]);
+        }
+
+        catch(\Exception $e)
+        {
+            return response()->json($this->getErrorJson($e->getMessage(), [
+                'field' => 'name',
+            ]),400);
+        }
+
        $users = new Users;
        $name = $request->input('name');
        $username = $request->input('username');
 
+
        $x = $users->add($name, $username);
        return response()->json($x[0],$x[1]);
+    }
+
+    protected function getErrorJson(string $message, array $data = [])
+    {
+        return [
+            'message' => $message,
+            'data'    => $data,
+        ];
     }
 
     public function delete(Request $request)

@@ -82,7 +82,7 @@ class Tasks extends Model
         }
         
         else{
-            return [['Error' => 'No tasks found for $list of $username'],404];
+            return [['Error' => 'No tasks found for '.$listname.' of '.$username],404];
         }
     }
 

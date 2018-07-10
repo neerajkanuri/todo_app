@@ -72,11 +72,11 @@ class Lists extends Model
         }
 
         $lists = Lists::select('name')->where('user_id','=',$userid)->pluck('name');
-        if(sizeof($users) > 0) {
+        if(sizeof($lists) > 0) {
         return [['lists' => $lists],200];
         }
         else{
-            return [['Error' => 'No lists found for $username'],404];
+            return [['Error' => 'No lists found for '.$username],404];
         }
     }
 
