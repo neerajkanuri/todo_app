@@ -34,7 +34,7 @@ class Users extends Model
         if (Users::where('username', '=', $username)->exists()) {
             $deleteduser = Users::select('name','username')->where('username','=',$username)->get();
             Users::where('username', '=', $username)->delete();
-            return [$deleteduser,200];
+            return [['user deleted' => $deleteduser],200];
         }
 
         else{

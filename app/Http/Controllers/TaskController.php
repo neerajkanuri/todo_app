@@ -9,6 +9,18 @@ class TaskController extends Controller
 {
     public function add(Request $request)
     {
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'username' => 'required|max:255',
+            'listname' => 'required|max:255',
+            'task' => 'required|max:255',
+        ]);
+
+        if(isset($validcheck))
+        {
+            return response()->json($validcheck,400);
+        }
+
         $tasks = new Tasks;
         $username = $request->input('username');
         $listname = $request->input('listname');
@@ -19,6 +31,18 @@ class TaskController extends Controller
 
     public function delete(Request $request)
     {
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'username' => 'required|max:255',
+            'listname' => 'required|max:255',
+            'task' => 'required|max:255',
+        ]);
+
+        if(isset($validcheck))
+        {
+            return response()->json($validcheck,400);
+        }
+
         $tasks = new Tasks;
         $username = $request->input('username');
         $listname = $request->input('listname');
@@ -29,6 +53,15 @@ class TaskController extends Controller
 
     public function list($username, $listname)
     {
+        if(strlen($username)>255)
+        {
+            return response()->json(['Error' => 'username is more than 255 characters'],400);
+        }
+        if(strlen($listname)>255)
+        {
+            return response()->json(['Error' => 'listname is more than 255 characters'],400);
+        }
+
         $tasks = new Tasks;
         $x = $tasks->list($username, $listname);
         return response()->json($x[0],$x[1]);
@@ -37,6 +70,19 @@ class TaskController extends Controller
 
     public function change(Request $request)
     {
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'username' => 'required|max:255',
+            'listname' => 'required|max:255',
+            'task' => 'required|max:255',
+            'newtask' => 'required|max:255',
+        ]);
+
+        if(isset($validcheck))
+        {
+            return response()->json($validcheck,400);
+        }
+
         $tasks = new Tasks;
         $username = $request->input('username');
         $listname = $request->input('listname');

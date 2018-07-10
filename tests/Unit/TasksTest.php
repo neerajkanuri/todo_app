@@ -68,9 +68,11 @@ class TasksTest extends TestCase
     {
         $tasks = new Tasks();
         $result = response()->json($tasks->remove('testing4','sample1','new task')[0]);
-        $this->assertSame(json_encode([[
-            'description' => 'new task',
-        ]]), $result->getContent());
+        $this->assertSame(json_encode([
+        'task deleted' => [['description' => 'new task',]],
+            'listname' => 'sample1',
+            'username' => 'testing4',
+        ]), $result->getContent());
     }
 
     public function testDeleteTaskDoesNotExist()

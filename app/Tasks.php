@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Tasks extends Model
 {
@@ -55,7 +54,7 @@ class Tasks extends Model
         if (Tasks::where('list_id', '=', $listid)->where('description','=',$description)->exists()) {
             $deletedtask = Tasks::where('list_id', '=', $listid)->where('description','=',$description)->select('description')->get();
             Tasks::where('list_id', '=', $listid)->where('description','=',$description)->delete();
-            return [$deletedtask,200];
+            return [['task deleted' => $deletedtask,'listname' => $listname, 'username' => $username],200];
         }
         else{
             return [['Error' => "The task $description does not exist in the list $listname belonging to $username"],404];

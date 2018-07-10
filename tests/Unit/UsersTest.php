@@ -14,10 +14,10 @@ class UsersTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+//    public function testExample()
+//    {
+//        $this->assertTrue(true);
+//    }
 
     public static $testData = [];
 
@@ -33,19 +33,23 @@ class UsersTest extends TestCase
     public function testAddUserExists()
     {
         $users = new Users();
-        $result = response()->json($users->add('neeraj','abcd')[0]);
+        $check = $users->add('neeraj','abcd');
+        $result = response()->json($check[0]);
         $this->assertSame(json_encode([
             'Error' => 'User with username: '.'abcd'.' exists'
         ]), $result->getContent());
+        $this->assertSame($check[1], 409);
     }
 
     public function testAddUserNew()
     {
         $users = new Users();
-        $result = response()->json($users->add('neeraj','testing1')[0]);
+        $check = $users->add('neeraj','testing1');
+        $result = response()->json($check[0]);
         $this->assertSame(json_encode([
             'Response' => 'User username: testing1 name: neeraj has been created'
         ]), $result->getContent());
+        $this->assertSame($check[1],200);
     }
 
     public function testUpdateUserName()
@@ -60,10 +64,12 @@ class UsersTest extends TestCase
     public function testUpdateUserNameDoesNotExist()
     {
         $users = new Users();
-        $result = response()->json($users->change('testing1','testing2')[0]);
+        $check = $users->change('testing1','testing2');
+        $result = response()->json($check[0]);
         $this->assertSame(json_encode([
             'Error' => 'User with username testing1 does not exist'
         ]), $result->getContent());
+        $this->assertSame($check[1],404);
     }
 
 
@@ -71,10 +77,9 @@ class UsersTest extends TestCase
     {
         $users = new Users();
         $result = response()->json($users->remove('testing2')[0]);
-        $this->assertSame(json_encode([[
-            "name" => "neeraj",
-            "username" => "testing2"
-        ]]),$result->getContent());
+        $this->assertSame(json_encode([
+            'user deleted' => [["name" => "neeraj", "username" => "testing2",]],
+        ]),$result->getContent());
     }
 
     public function testDeleteUserDoesNotExist()

@@ -19,7 +19,7 @@ class ListsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testListUsers()
+    public function testshowLists()
     {
         $lists = new Lists();
         $result = response()->json($lists->show('neerajkanuri')[0]);
@@ -68,9 +68,10 @@ class ListsTest extends TestCase
     {
         $lists = new Lists();
         $result = response()->json($lists->remove('testing3','testing3list2')[0]);
-        $this->assertSame(json_encode([[
-            'name' => 'testing3list2',
-        ]]), $result->getContent());
+        $this->assertSame(json_encode([
+            'list deleted' => [['name' => 'testing3list2',]],
+            'username' => 'testing3',
+        ]), $result->getContent());
     }
 
     public function testDeleteListDoesNotExist()

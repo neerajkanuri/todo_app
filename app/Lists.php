@@ -53,7 +53,7 @@ class Lists extends Model
         if (Lists::where('user_id', '=', $userid)->where('name','=',$listname)->exists()) {
             $deletedlist = Lists::where('user_id', '=', $userid)->where('name','=',$listname)->select('name')->get();
             Lists::where('user_id', '=', $userid)->where('name','=',$listname)->delete();
-            return [$deletedlist,200];
+            return [['list deleted' => $deletedlist,'username' => $username],200];
         }
         else{
             return [['Error' => "List $listname belonging to $username does not exist"],404];

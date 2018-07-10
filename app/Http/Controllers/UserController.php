@@ -4,24 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Users;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 
 class UserController extends Controller
 {
     public function add(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required|max:255',
-                'username' => 'required|max:255',
-            ]);
-        }
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'name' => 'required|max:255',
+            'username' => 'required|max:255',
+        ]);
 
-        catch(\Exception $e)
+        if(isset($validcheck))
         {
-            return response()->json($this->getErrorJson($e->getMessage(), [
-                'field' => 'name',
-            ]),400);
+            return response()->json($validcheck,400);
         }
 
        $users = new Users;
@@ -33,16 +31,20 @@ class UserController extends Controller
        return response()->json($x[0],$x[1]);
     }
 
-    protected function getErrorJson(string $message, array $data = [])
-    {
-        return [
-            'message' => $message,
-            'data'    => $data,
-        ];
-    }
+
 
     public function delete(Request $request)
     {
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'username' => 'required|max:255',
+        ]);
+
+        if(isset($validcheck))
+        {
+            return response()->json($validcheck,400);
+        }
+
         $users = new Users;
         $username = $request->input('username');
 
@@ -65,6 +67,17 @@ class UserController extends Controller
 
     public function change(Request $request)
     {
+        $basecontrol = new BaseController;
+        $validcheck = $basecontrol->myvalidation($request,[
+            'username' => 'required|max:255',
+            'newusername' => 'required|max:255',
+        ]);
+
+        if(isset($validcheck))
+        {
+            return response()->json($validcheck,400);
+        }
+
         $users = new Users;
         $username = $request->input('username');
         $newusername = $request->input('newusername');
