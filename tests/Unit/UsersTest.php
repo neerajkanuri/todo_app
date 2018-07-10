@@ -18,7 +18,7 @@ class UsersTest extends TestCase
 //    {
 //        $this->assertTrue(true);
 //    }
-
+=
     public static $testData = [];
 
     public function testListUsers()
