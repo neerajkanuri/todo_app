@@ -13,8 +13,8 @@ class TaskController extends Controller
         $username = $request->input('username');
         $listname = $request->input('listname');
         $description = $request->input('task');
-
-        return response()->json($tasks->add($username, $listname, $description));
+        $x = $tasks->add($username, $listname, $description);
+        return response()->json($x[0],$x[1]);
     }
 
     public function delete(Request $request)
@@ -23,15 +23,15 @@ class TaskController extends Controller
         $username = $request->input('username');
         $listname = $request->input('listname');
         $description = $request->input('task');
-
-        return response()->json($tasks->remove($username, $listname, $description));
+        $x = $tasks->remove($username, $listname, $description);
+        return response()->json($x[0],$x[1]);
     }
 
     public function list($username, $listname)
     {
         $tasks = new Tasks;
-
-        return response()->json($tasks->list($username, $listname));
+        $x = $tasks->list($username, $listname);
+        return response()->json($x[0],$x[1]);
 
     }
 
@@ -42,7 +42,7 @@ class TaskController extends Controller
         $listname = $request->input('listname');
         $description = $request->input('task');
         $newdescription = $request->input('newtask');
-
-        return response()->json($tasks->change($username, $listname, $description,$newdescription));
+        $x = $tasks->change($username, $listname, $description,$newdescription);
+        return response()->json($x[0],$x[1]);
     }
 }

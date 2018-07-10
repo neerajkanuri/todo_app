@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Lists extends Model
 {
@@ -28,21 +27,15 @@ class Lists extends Model
 
         if($userid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
 
         if (Lists::where('user_id', '=', $userid)->where('name','=',$listname)->exists()) {
-            return ['status' => "List $listname belonging to $username exists"];
+            return [['Error' => "List $listname belonging to $username exists"],409];
         }
         else{
-            $list = Lists::firstOrCreate(
-                ['name' => $listname],
-                // But, if ends up creating a Bar, also add this parameters
-                [
-                    'user_id'       => $userid,
-                ]
-            );
-            return ['status' => "List $listname belonging to $username has been created"];
+            Lists::create(['name' => $listname, 'user_id' => $userid]);
+            return [['Response' => "List $listname belonging to $username has been created"],200];
         }
 
     }
@@ -54,15 +47,16 @@ class Lists extends Model
 
         if($userid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
 
         if (Lists::where('user_id', '=', $userid)->where('name','=',$listname)->exists()) {
+            $deletedlist = Lists::where('user_id', '=', $userid)->where('name','=',$listname)->select('name')->get();
             Lists::where('user_id', '=', $userid)->where('name','=',$listname)->delete();
-            return ['status' => "List $listname belonging to $username has been deleted"];
+            return [$deletedlist,200];
         }
         else{
-            return ['status' => "List $listname belonging to $username does not exist"];
+            return [['Response' => "List $listname belonging to $username does not exist"],404];
         }
 
     }
@@ -74,11 +68,16 @@ class Lists extends Model
 
         if($userid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
 
-        $lists = DB::table('lists')->select('name')->where('user_id','=',$userid)->pluck('name');
-        return $lists;
+        $lists = Lists::select('name')->where('user_id','=',$userid)->pluck('name');
+        if(sizeof($users) > 0) {
+        return [['lists' => $lists],200];
+        }
+        else{
+            return [['Error' => 'No lists found for $username'],404];
+        }
     }
 
     public function getId($username, $listname)
@@ -92,12 +91,12 @@ class Lists extends Model
 
         if (Lists::where('user_id', '=', $userid)->where('name', '=', $listname)->exists()) {
 
-            $listid = DB::table('lists')->select('id')->where('user_id', '=', $userid)->where('name', '=', $listname)->pluck('id')[0];
-            echo "This is what is happening";
+            $listid = Lists::select('id')->where('user_id', '=', $userid)->where('name', '=', $listname)->pluck('id')[0];
+            // echo "This is what is happening";
             return $listid;
         }
         else{
-            echo "This is what is not happending";
+            // echo "This is what is not happending";
             return -2;
         }
     }
@@ -108,23 +107,22 @@ class Lists extends Model
         $userid = $users->getId($username);
 
         if($userid == -1) {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
 
         if (Lists::where('user_id', '=', $userid)->where('name','=',$listname)->exists()) {
             if (Lists::where('user_id', '=', $userid)->where('name', '=', $newlistname)->exists()) {
-                return ['status' => "List $listname belonging to $username has not been updated to the new name $newlistname since there is already a list with $listname belonging to $username "];
+                return [['Error' => "List $listname belonging to $username has not been updated to the new name $newlistname since there is already a list with $newlistname belonging to $username "],409];
             }
             else {
-                DB::table('lists')
-                    ->where('user_id', '=', $userid)
+                Lists::where('user_id', '=', $userid)
                     ->where('name', '=', $listname)
                     ->update(['name' => $newlistname]);
-                return ['status' => "List $listname belonging to $username has been updated to the new name $newlistname"];
+                return [['Response' => "List $listname belonging to $username has been updated to the new name $newlistname"],200];
             }
         }
         else{
-            return ['status' => "List $listname belonging to $username does not exist"];
+            return [['Error' => "List $listname belonging to $username does not exist"],404];
         }
 
     }

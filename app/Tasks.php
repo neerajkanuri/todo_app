@@ -22,25 +22,19 @@ class Tasks extends Model
         $listid = $lists->getId($username,$listname);
         if($listid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
         if($listid == -2)
         {
-            return ['status' => "Username $username does not have the list $listname"];
+            return [['Error' => "Username $username does not have the list $listname"],404];
         }
 
         if (Tasks::where('list_id', '=', $listid)->where('description','=',$description)->exists()) {
-            return ['status' => "The task $description already exists in the list $listname belonging to $username"];
+            return [['Error' => "The task $description already exists in the list $listname belonging to $username"],409];
         }
         else{
-            $list = Tasks::firstOrCreate(
-                ['description' => $description],
-                // But, if ends up creating a Bar, also add this parameters
-                [
-                    'list_id'       => $listid,
-                ]
-            );
-            return ['status' => "The task $description has been added to the list $listname belonging to $username"];
+            Tasks::create(['description' => $description, 'list_id'=>$listid]);
+            return [['Response' => "The task $description has been added to the list $listname belonging to $username"],200];
         }
 
     }
@@ -51,19 +45,20 @@ class Tasks extends Model
         $listid = $lists->getId($username,$listname);
         if($listid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
         if($listid == -2)
         {
-            return ['status' => "Username $username does not have the list $listname"];
+            return [['Error' => "Username $username does not have the list $listname"],404];
         }
 
         if (Tasks::where('list_id', '=', $listid)->where('description','=',$description)->exists()) {
+            $deletedtask = Tasks::where('list_id', '=', $listid)->where('description','=',$description)->select('description')->get();
             Tasks::where('list_id', '=', $listid)->where('description','=',$description)->delete();
-            return ['status' => "The task $description has been removed from the list $listname belonging to $username"];
+            return [['Response' => "The task $description has been removed from the list $listname belonging to $username"],200];
         }
         else{
-            return ['status' => "The task $description does not exist in the list $listname belonging to $username"];
+            return [['Error' => "The task $description does not exist in the list $listname belonging to $username"],404];
         }
 
     }
@@ -74,15 +69,21 @@ class Tasks extends Model
         $listid = $lists->getId($username,$listname);
         if($listid == -1)
         {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
         if($listid == -2)
         {
-            return ['status' => "Username $username does not have the list $listname"];
+            return [['Error' => "Username $username does not have the list $listname"],404];
         }
 
-        $tasks = DB::table('tasks')->select('description')->where('list_id','=',$listid)->pluck('description');
-        return $tasks;
+        $tasks = Tasks::select('description')->where('list_id','=',$listid)->pluck('description');
+        if(sizeof($tasks)>0){
+            return [['tasks' => $tasks],200];
+        }
+        
+        else{
+            return [['Error' => 'No tasks found for $list of $username'],404];
+        }
     }
 
     public function change($username, $listname, $description, $newdescription)
@@ -91,31 +92,30 @@ class Tasks extends Model
         $listid = $lists->getId($username,$listname);
 
         if($listid == -1) {
-            return ['status' => "Username $username does not exist"];
+            return [['Error' => "Username $username does not exist"],404];
         }
 
         if($listid == -2) {
-            return ['status' => "Username $username does not have the list $listname"];
+            return [['Error' => "Username $username does not have the list $listname"],404];
         }
 
         if (Tasks::where('list_id', '=', $listid)->where('description','=',$description)->exists()) {
 
             if (Tasks::where('list_id', '=', $listid)->where('description','=',$newdescription)->exists()) {
-                return ['status' => "The task $description has not been updated to $newdescription in the list $listname belonging to $username since the task $newdescription in the list $listname belonging to $username already exists"];
+                return [['Error' => "The task $description has not been updated to $newdescription in the list $listname belonging to $username since the task $newdescription in the list $listname belonging to $username already exists"],409];
             }
 
             else {
-                DB::table('tasks')
-                    ->where('list_id', '=', $listid)
+                Tasks::where('list_id', '=', $listid)
                     ->where('description', '=', $description)
                     ->update(['description' => $newdescription]);
-                return ['status' => "The task $description has been updated to $newdescription in the list $listname belonging to $username"];
+                return [['Response' => "The task $description has been updated to $newdescription in the list $listname belonging to $username"],200];
             }
 
         }
 
         else{
-            return ['status' => "The task $description does not exist in the list $listname belonging to $username"];
+            return [['Error' => "The task $description does not exist in the list $listname belonging to $username"],404];
         }
 
     }

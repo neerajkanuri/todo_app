@@ -12,8 +12,8 @@ class ListController extends Controller
         $lists = new Lists;
         $username = $request->input('username');
         $listname = $request->input('listname');
-
-        return response()->json($lists->add($username, $listname));
+        $x = $lists->add($username, $listname);
+        return response()->json($x[0],$x[1]);
     }
 
     public function delete(Request $request)
@@ -21,14 +21,15 @@ class ListController extends Controller
         $lists = new Lists;
         $username = $request->input('username');
         $listname = $request->input('listname');
-
-        return response()->json($lists->remove($username, $listname));
+        $x = $lists->remove($username, $listname);
+        return response()->json($x[0],$x[1]);
     }
 
     public function show($username)
     {
         $lists = new Lists;
-        return response()->json($lists->show($username));
+        $x = $lists->show($username);
+        return response()->json($x[0],$x[1]);
     }
 
     public function change(Request $request)
@@ -37,8 +38,8 @@ class ListController extends Controller
         $username = $request->input('username');
         $listname = $request->input('listname');
         $newlistname = $request->input('newlistname');
-
-        return response()->json($lists->change($username, $listname, $newlistname));
+        $x = $lists->change($username, $listname, $newlistname);
+        return response()->json($x[0],$x[1]);
     }
 }
 

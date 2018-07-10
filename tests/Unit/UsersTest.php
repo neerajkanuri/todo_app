@@ -7,6 +7,11 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use Illuminate\Foundation\Testing\HttpException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
+
 class UsersTest extends TestCase
 {
     /**

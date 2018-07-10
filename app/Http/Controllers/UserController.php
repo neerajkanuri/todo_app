@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Users;
 use Illuminate\Http\Request;
 
+
 class UserController extends Controller
 {
     public function add(Request $request)
@@ -13,7 +14,8 @@ class UserController extends Controller
        $name = $request->input('name');
        $username = $request->input('username');
 
-       return response()->json($users->add($name, $username));
+       $x = $users->add($name, $username);
+       return response()->json($x[0],$x[1]);
     }
 
     public function delete(Request $request)
@@ -21,13 +23,16 @@ class UserController extends Controller
         $users = new Users;
         $username = $request->input('username');
 
-        return response()->json($users->remove($username));
+        $x = $users->remove($username);
+        return response()->json($x[0],$x[1]);
     }
 
     public function list()
     {
         $users = new Users;
-        return response()->json($users->list());
+
+        $x = $users->list();
+        return response()->json($x[0],$x[1]);
     }
 
     public function show()
@@ -40,6 +45,7 @@ class UserController extends Controller
         $users = new Users;
         $username = $request->input('username');
         $newusername = $request->input('newusername');
-        return response()->json($users->change($username, $newusername));
+        $x = $users->change($username, $newusername);
+        return response()->json($x[0],$x[1]);
     }
 }

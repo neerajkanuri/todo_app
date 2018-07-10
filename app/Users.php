@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Users extends Model
 {
@@ -19,45 +18,47 @@ class Users extends Model
     public function add($name, $username)
     {
         if (Users::where('username', '=', $username)->exists()) {
-            return ['status' => "User exists"];
+            return [['Error' => "User with username: $username exists"],409];
         }
 
         else{
-            $user = Users::firstOrCreate(
-            ['username' => $username],
-            // But, if ends up creating a Bar, also add this parameters
-            [
-                'name'       => $name,
-            ]
-        );
-            return ['status' => "User has been created"];
+            Users::create(['username' => $username, 'name' => $name]);
+            return [['Response' => "User username: $username name: $name has been created"],200];
         }
     }
 
     public function remove($username)
     {
         if (Users::where('username', '=', $username)->exists()) {
+            $deleteduser = Users::select('name','username')->where('username','=',$username)->get();
             Users::where('username', '=', $username)->delete();
-            return ['status' => "User has been deleted"];
+            return [$deleteduser,200];
         }
 
         else{
-            return ['status' => "Username does not exist"];
+            return [['Error' => "Username does not exist"],404];
         }
     }
 
     public function list()
     {
-        $users = DB::table('users')->select('name','username')->get();
+        $users = Users::select('name')->pluck('name');
 
-        return $users;
+        if(sizeof($users) > 0) {
+            return [['names' => $users],200];
+        }
+
+        else {
+            return [['Error' => 'No users found in the database'],404];
+        }
+
     }
 
     public function getId($username)
     {
         if (Users::where('username', '=', $username)->exists())
         {
-            $userid = DB::table('users')->select('id')->where('username','=',$username)->pluck('id')[0];
+            $userid = Users::select('id')->where('username','=',$username)->pluck('id')[0];
             return $userid;
         }
 
@@ -70,19 +71,18 @@ class Users extends Model
     {
         if (Users::where('username', '=', $username)->exists()) {
             if (Users::where('username', '=', $newusername)->exists()) {
-                return ['status' => "Username $username has not been updated to $newusername since $newusername already exists"];
+                return [['Error' => "Username $username has not been updated to $newusername since $newusername already exists"],409];
             }
             else{
-                DB::table('users')
-                    ->where('username', '=', $username)
+                Users::where('username', '=', $username)
                     ->update(['username' => $newusername]);
-                return ['status' => "Username $username has been updated to $newusername"];
+                return [['Response' => "Username $username has been updated to $newusername"],200];
             }
 
         }
 
         else{
-            return ['status' => "User with username $username does not exist"];
+            return [['Error' => "User with username $username does not exist"],404];
         }
     }
 }
