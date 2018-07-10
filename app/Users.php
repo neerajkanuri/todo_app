@@ -9,6 +9,8 @@ class Users extends Model
     //
     protected $table = 'users';
     protected $fillable = ['name','username'];
+    const ERROR = 'Error1';
+    const RESPONSE = 'Response1';
 
     public function lists()
     {

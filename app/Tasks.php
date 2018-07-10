@@ -55,7 +55,7 @@ class Tasks extends Model
         if (Tasks::where('list_id', '=', $listid)->where('description','=',$description)->exists()) {
             $deletedtask = Tasks::where('list_id', '=', $listid)->where('description','=',$description)->select('description')->get();
             Tasks::where('list_id', '=', $listid)->where('description','=',$description)->delete();
-            return [['Response' => "The task $description has been removed from the list $listname belonging to $username"],200];
+            return [$deletedtask,200];
         }
         else{
             return [['Error' => "The task $description does not exist in the list $listname belonging to $username"],404];

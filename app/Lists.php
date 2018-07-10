@@ -56,7 +56,7 @@ class Lists extends Model
             return [$deletedlist,200];
         }
         else{
-            return [['Response' => "List $listname belonging to $username does not exist"],404];
+            return [['Error' => "List $listname belonging to $username does not exist"],404];
         }
 
     }
